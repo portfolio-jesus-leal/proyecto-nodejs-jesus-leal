@@ -1,11 +1,11 @@
 const Course = require("../models/course.model");
 const TutorResolver = require("../resolvers/tutor.resolver");
+const StudentResolver = require("../resolvers/student.resolver");
 
 //
 // GET all the courses
 //
 const getAllCourses = async (req, res, next) => {
-  console.log("getAllCourses");
   try {
     const find = Course.find();
     const query = req.query.extended ? find.populate("tutor") : find;
@@ -20,15 +20,26 @@ const getAllCourses = async (req, res, next) => {
 // GET courses by status
 //
 const getCoursesByStatus = async (req, res, next) => {
-  console.log("getCoursesByStatus");
-  const status = req.params.status;
-
   try {
-    const find = Course.find({status:status});
+    const status = req.params.status;
+    const find = Course.find({ status: status });
     const query = req.query.extended ? find.populate("tutor") : find;
     allCourses = await query;
     console.log("allCourses -> ", allCourses);
     return res.status(200).json(allCourses);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+//
+// GET all the courses with a specific tutor
+//
+const getCoursesByTutor = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const allCoursesByTutor = await Course.find({ tutor: id });
+    return res.status(200).json(allCoursesByTutor);
   } catch (error) {
     return next(error);
   }
@@ -50,9 +61,8 @@ const getCourseById = async (req, res, next) => {
 // POST - Create a new course
 //
 const postNewCourse = async (req, res, next) => {
-  const { title, status, startDate, tutor } = req.body;
-
   try {
+    const { title, status, startDate, tutor } = req.body;
     const newCourse = new Course({
       title: title,
       status: status,
@@ -60,7 +70,7 @@ const postNewCourse = async (req, res, next) => {
     });
 
     if (tutor) {
-      await TutorResolver.existsById(tutor);
+      TutorResolver.existsById(tutor);
       newCourse.tutor = tutor;
     }
 
@@ -78,14 +88,18 @@ const updateCourseById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { title, status, startDate, tutor } = req.body;
-    
+
     if (tutor) {
-        await TutorResolver.existsById(tutor);
+      TutorResolver.existsById(tutor);
     }
 
-    const updatedCourse = await Course.findByIdAndUpdate(id, {title, status, startDate, tutor});
+    const updatedCourse = await Course.findByIdAndUpdate(id, {
+      title,
+      status,
+      startDate,
+      tutor,
+    });
     return res.status(200).json(updatedCourse);
-    
   } catch (error) {
     return next(error);
   }
@@ -115,7 +129,7 @@ const pathUpdateTutor = async (req, res, next) => {
     const { id } = req.params;
     const tutor = req.body.tutor;
 
-    await TutorResolver.existsById(tutor);
+    TutorResolver.existsById(tutor);
 
     const updateCourseWithTutor = await Course.findByIdAndUpdate(id, {
       $set: { tutor: tutor },
@@ -165,6 +179,15 @@ const deleteCourse = async (req, res, next) => {
   try {
     const { id } = req.params;
 
+    const students = await StudentResolver.findByCourse( id );
+
+    if (students.length) {
+      const error = new Error();
+      error.message="Course has linked students, unlink them first before deleting course";
+      error.status=400;
+      return next(error);
+    }      
+
     const course = await Course.findByIdAndDelete(id);
     return res.status(200).json(course);
   } catch (error) {
@@ -175,6 +198,7 @@ const deleteCourse = async (req, res, next) => {
 module.exports = {
   getAllCourses,
   getCoursesByStatus,
+  getCoursesByTutor,
   getCourseById,
   postNewCourse,
   deleteCourse,

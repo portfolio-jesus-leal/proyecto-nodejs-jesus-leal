@@ -3,6 +3,7 @@ const {
   getAllCourses,
   getCourseById,
   getCoursesByStatus,
+  getCoursesByTutor,
   postNewCourse,
   deleteCourse,
   updateCourseById,
@@ -15,6 +16,7 @@ const {
 courseRouter.get("/", getAllCourses);
 courseRouter.get("/:id", getCourseById);
 courseRouter.get("/status/:status",getCoursesByStatus);
+courseRouter.get("/tutor/:id", getCoursesByTutor);
 courseRouter.post("/", postNewCourse);
 courseRouter.delete("/:id", deleteCourse);
 courseRouter.put("/:id", updateCourseById);

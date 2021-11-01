@@ -3,8 +3,7 @@ const Tutor = require("../models/tutor.model");
 class TutorResolver {
     static async existsById(id) {
         try {
-            const result = await Tutor.findById(id);
-            console.log('Result ->', result);
+            await Tutor.findById(id);
             return true;
         } catch (error) {
             throw error;
