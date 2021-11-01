@@ -3,7 +3,6 @@ require('dotenv').config();
 
 // URL local de nuestra base de datos en mongoose y su nombre upgrade_class_3
 const urlDB = process.env.MONGO_URI;
-console.log(urlDB);
 
 const connectWithDB = async () => {
     try {

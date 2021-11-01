@@ -18,6 +18,9 @@ const getTutorById = async (req, res, next) => {
     }
 }
 
+//
+// POST - Create a new tutor
+//
 const postNewTutor = async (req, res, next) => {
     try {
 
@@ -28,9 +31,8 @@ const postNewTutor = async (req, res, next) => {
                 email: req.body.email,
             }
         )
-        console.log(newTutor);
         const newTutorInDB = await newTutor.save();
-        return res.status(200).send(newTutorInDB);
+        return res.status(201).send(newTutorInDB);
 
     } catch (error) {
         return next(err);

@@ -1,50 +1,100 @@
 const Course = require("../models/course.model");
+const TutorResolver = require("../resolvers/tutor.resolver");
 
-// El next es porque ya tenemos dfinido nuestro middleware para gestionar los errores
-// Por lo que el catch deberá pasar el control a next con el error
+//
+// GET all the courses
+//
 const getAllCourses = async (req, res, next) => {
+  console.log("getAllCourses");
   try {
-    const allCourses = await Course.find().populate("tutor");
+    const find = Course.find();
+    const query = req.query.extended ? find.populate("tutor") : find;
+    allCourses = await query;
     return res.status(200).json(allCourses);
   } catch (error) {
     return next(error);
   }
 };
 
+//
+// GET courses by status
+//
+const getCoursesByStatus = async (req, res, next) => {
+  console.log("getCoursesByStatus");
+  const status = req.params.status;
+
+  try {
+    const find = Course.find({status:status});
+    const query = req.query.extended ? find.populate("tutor") : find;
+    allCourses = await query;
+    console.log("allCourses -> ", allCourses);
+    return res.status(200).json(allCourses);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+//
+// GET a course by Id
+//
 const getCourseById = async (req, res, next) => {
   try {
-    const tutor = await Course.findById(req.params.id);
-    return res.status(200).json(tutor);
+    const course = await Course.findById(req.params.id).populate("tutor");
+    return res.status(200).json(course);
   } catch (error) {
     return next(error);
   }
 };
 
+//
+// POST - Create a new course
+//
 const postNewCourse = async (req, res, next) => {
+  const { title, status, startDate, tutor } = req.body;
+
   try {
-    const newCourse = new Course(req.body);
-    console.log(newCourse);
+    const newCourse = new Course({
+      title: title,
+      status: status,
+      startDate: startDate,
+    });
+
+    if (tutor) {
+      await TutorResolver.existsById(tutor);
+      newCourse.tutor = tutor;
+    }
+
     const newCourseInDB = await newCourse.save();
-    return res.status(200).send(newCourseInDB);
+    res.status(201).json(newCourseInDB);
   } catch (error) {
     return next(error);
   }
 };
 
+//
+// PUT - Update a course
+//
 const updateCourseById = async (req, res, next) => {
-    try {
-        const { id } = req.params;   
-
-        // Falta implementa updateCourse
-        // ???????????
-        
-        return res.status(200).json(updateCourse);
-    } catch (error) {
-        return next(error);  
+  try {
+    const { id } = req.params;
+    const { title, status, startDate, tutor } = req.body;
+    
+    if (tutor) {
+        await TutorResolver.existsById(tutor);
     }
-}
 
-const pathNewTitle = async (req, res, next) => {
+    const updatedCourse = await Course.findByIdAndUpdate(id, {title, status, startDate, tutor});
+    return res.status(200).json(updatedCourse);
+    
+  } catch (error) {
+    return next(error);
+  }
+};
+
+//
+// PATH - Update just the title attribute
+//
+const pathUpdateTitle = async (req, res, next) => {
   try {
     const { id } = req.params;
     const title = req.body.title;
@@ -57,10 +107,16 @@ const pathNewTitle = async (req, res, next) => {
   }
 };
 
-const pathNewTutor = async (req, res, next) => {
+//
+// PATH - Update just the tutor attribute
+//
+const pathUpdateTutor = async (req, res, next) => {
   try {
     const { id } = req.params;
     const tutor = req.body.tutor;
+
+    await TutorResolver.existsById(tutor);
+
     const updateCourseWithTutor = await Course.findByIdAndUpdate(id, {
       $set: { tutor: tutor },
     });
@@ -70,7 +126,10 @@ const pathNewTutor = async (req, res, next) => {
   }
 };
 
-const pathNewStartDate = async (req, res, next) => {
+//
+// PATH - Update just the start date attribute
+//
+const pathUpdateStartDate = async (req, res, next) => {
   try {
     const { id } = req.params;
     const startDate = req.body.start_date;
@@ -83,7 +142,10 @@ const pathNewStartDate = async (req, res, next) => {
   }
 };
 
-const pathNewStatus = async (req, res, next) => {
+//
+// PATH - Update just the status attribute
+//
+const pathUpdateStatus = async (req, res, next) => {
   try {
     const { id } = req.params;
     const status = req.body.status;
@@ -96,16 +158,15 @@ const pathNewStatus = async (req, res, next) => {
   }
 };
 
+//
+// DELETE Course
+//
 const deleteCourse = async (req, res, next) => {
   try {
     const { id } = req.params;
-    
-    //Buscar si existe algún alumno inscrito
-    //??????????????
 
-    await Course.delete(id);
-    return res.status(200).json({});
-
+    const course = await Course.findByIdAndDelete(id);
+    return res.status(200).json(course);
   } catch (error) {
     return next(error);
   }
@@ -113,12 +174,13 @@ const deleteCourse = async (req, res, next) => {
 
 module.exports = {
   getAllCourses,
+  getCoursesByStatus,
   getCourseById,
   postNewCourse,
   deleteCourse,
   updateCourseById,
-  pathNewTitle,
-  pathNewTutor,
-  pathNewStartDate,
-  pathNewStatus,
+  pathUpdateTitle,
+  pathUpdateTutor,
+  pathUpdateStartDate,
+  pathUpdateStatus,
 };

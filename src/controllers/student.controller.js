@@ -21,13 +21,26 @@ const getStudentById = async (req, res) => {
     }
 }
 
+//
+// POST - Create a new student
+//
 const postNewStudent = async (req, res, next) => {
     try {
 
-        const newStudent = new Student(req.body);
-        console.log(newStudent);
+        const newStudent = new Student(
+            {
+                name: req.body.name,
+                surname: req.body.surname,
+                address: req.body.address,
+                email: req.body.email,
+                courses: req.body.courses,
+            }
+        )
         const newStudentInDB = await newStudent.save();
-        return res.status(200).send(newStudentInDB);
+
+        //const { name, surname, address, email, courses } = req.body;
+        //const newStudentInDB = await Course.create({ name, surname, address, email, courses });
+        res.status(201).json(newStudentInDB);
 
     } catch (error) {
         return next(error);

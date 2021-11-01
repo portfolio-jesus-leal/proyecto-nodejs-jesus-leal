@@ -9,7 +9,7 @@ const courseSchema = new mongoose.Schema(
         default: 'Open',
         trim:true },
     startDate: { type: Date },
-    tutor: [{type: mongoose.Types.ObjectId, ref: 'Tutors'}]
+    tutor: {type: mongoose.Types.ObjectId, ref: 'Tutors'}
 },
 {
     timestamps: true
