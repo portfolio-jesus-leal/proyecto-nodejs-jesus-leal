@@ -114,6 +114,22 @@ const pathNewCourseInStudent = async (req, res, next) => {
 };
 
 //
+// PATH - Remove a course from a student
+//
+const pathRemoveCourseInStudent = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const course = req.body.course;
+    const updateStudentWithoutCourse = await Student.findByIdAndUpdate(id, {
+      $pull: { courses: course },
+    });
+    return res.status(200).json(updateStudentWithoutCourse);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+//
 // DELETE Student
 //
 const deleteStudent = async (req, res, next) => {
@@ -134,5 +150,6 @@ module.exports = {
   updateStudentById,
   postNewStudent,
   pathNewCourseInStudent,
+  pathRemoveCourseInStudent,
   deleteStudent,
 };
