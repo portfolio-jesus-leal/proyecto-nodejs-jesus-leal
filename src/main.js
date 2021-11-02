@@ -1,13 +1,26 @@
 const express = require('express');
 const { connectWithDB } = require('./_shared/utils/db/db');
+const { isAuth } = require('./_shared/middleware/auth.middleware');
+const { defaults } = require('./_shared/utils/utils.utils');
+const cloudinary = require("cloudinary").v2;
 // Main routes
 const coursesRoutes = require('./routes/course.routes');
 const studentsRoutes = require('./routes/student.routes');
 const tutorsRoutes = require('./routes/tutor.routes');
+const usersRoutes = require('./routes/user.routes');
 // Middleweare logging
 const logging = require('./_shared/middleware/logging.middleware');
 
-const PORT = 3001;
+require('dotenv').config()
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET,
+});
+
+const PORT = defaults(process.env.PORT, 3000);
+//const PORT = 3001;
 const app = express();
 
 connectWithDB();
@@ -17,9 +30,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(logging);
 
 // Routes
-app.use('/courses', coursesRoutes);
-app.use('/students', studentsRoutes);
-app.use('/tutors', tutorsRoutes);
+app.use('/users', usersRoutes);
+app.use('/courses', [isAuth], coursesRoutes);
+app.use('/students', [isAuth], studentsRoutes);
+app.use('/tutors', [isAuth], tutorsRoutes);
 
 app.use('*', (req, res, next) => {
     const error = new Error();
@@ -32,8 +46,8 @@ app.use('*', (req, res, next) => {
 app.use((error, req, res, next) => {
 
     const exception = {
-        status: (error.status || 500),
-        message: (error.message  ||  'An unexpected error happened'),
+        status: defaults(error.status, 500),
+        message: defaults(error.message, 'An unexpected error happened'),
     }
 
     if (process.env.NODE_ENV !== 'production') {

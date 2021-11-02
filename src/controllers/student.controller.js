@@ -55,6 +55,7 @@ const postNewStudent = async (req, res, next) => {
       surname: surname,
       address: address,
       email: email,
+      image: req.file ? req.file.path : null
     });
 
     if (courses) {
