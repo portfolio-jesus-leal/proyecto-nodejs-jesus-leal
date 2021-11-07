@@ -72,39 +72,39 @@ Se ha incluido autenticación de usuario para todas las rutas salvo para:
 
 |_📁 src
   📄main.js
-	|_📁 models
-      📝course.model.js
-      📝student.model.js
-      📝tutor.model.js
-	  📝user.model.js
-	|_📁 routes
-      📝course.routes.js
-      📝student.routes.js
-      📝tutor.routes.js
-	  📝user.routes.js
-	|_📁 controllers
-      📝course.controller.js
-      📝student.controller.js
-      📝tutor.controller.js
-	  📝user.controller.js
-    |_📁resolvers
-      📝course.resolver.js
-      📝student.resolver.js
-      📝tutor.resolver.js  
-	|_📁 seeds
-	  📝course.seed.js
-      📝student.seed.js
-      📝tutor.seed.js
-    |_📁_shared
-        |_📁middleware
-          📝auth.middleware.js
-          📝file.middleware.js
-          📝logging.middleware.js
-        |_📁utils
-          📝utils.utils.js
-          📝validations.utils.js
-          |_📁db
-            📝db.js
+  |_📁 models
+    📝course.model.js
+    📝student.model.js
+    📝tutor.model.js
+    📝user.model.js
+  |_📁 routes
+    📝course.routes.js
+    📝student.routes.js
+    📝tutor.routes.js
+    📝user.routes.js
+  |_📁 controllers
+    📝course.controller.js
+    📝student.controller.js
+    📝tutor.controller.js
+	📝user.controller.js
+  |_📁resolvers
+    📝course.resolver.js
+    📝student.resolver.js
+    📝tutor.resolver.js  
+  |_📁 seeds
+    📝course.seed.js
+    📝student.seed.js
+    📝tutor.seed.js
+  |_📁_shared
+    |_📁middleware
+      📝auth.middleware.js
+      📝file.middleware.js
+      📝logging.middleware.js
+    |_📁utils
+      📝utils.utils.js
+      📝validations.utils.js
+      |_📁db
+        📝db.js
 📝.env
 ```
 
