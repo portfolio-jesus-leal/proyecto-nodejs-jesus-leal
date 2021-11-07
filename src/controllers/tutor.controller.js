@@ -1,6 +1,9 @@
 const Tutor = require("../models/tutor.model");
 const CourseResolver = require("../resolvers/course.resolver");
 
+//
+// GET all tutors
+//
 const getAllTutors = async (req, res, next) => {
   try {
     const allTutors = await Tutor.find();
@@ -10,6 +13,9 @@ const getAllTutors = async (req, res, next) => {
   }
 };
 
+//
+// GET a tutor by Id
+//
 const getTutorById = async (req, res, next) => {
   try {
     const tutorById = await Tutor.findById(req.params.id);

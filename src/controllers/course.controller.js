@@ -3,7 +3,7 @@ const TutorResolver = require("../resolvers/tutor.resolver");
 const StudentResolver = require("../resolvers/student.resolver");
 
 //
-// GET all the courses
+// GET all courses
 //
 const getAllCourses = async (req, res, next) => {
   try {

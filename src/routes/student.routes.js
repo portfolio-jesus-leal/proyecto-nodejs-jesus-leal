@@ -7,18 +7,20 @@ const {
   getStudentById,
   updateStudentById,
   postNewStudent,
-  pathNewCourseInStudent,
-  pathRemoveCourseInStudent, 
+  newCourseInStudent,
+  removeCourseInStudent, 
+  updateImageStudent,
   deleteStudent,
 } = require("../controllers/student.controller");
 
 studentRouter.get("/", getAllStudents);
-studentRouter.get("/course/:id", getStudentsByCourse);
+studentRouter.get("/course/:courseid", getStudentsByCourse);
 studentRouter.get("/:id", getStudentById);
 studentRouter.put("/:id", updateStudentById);
 studentRouter.post("/", upload.single('image'), postNewStudent);
-studentRouter.patch("/newcourse/:id", pathNewCourseInStudent);
-studentRouter.patch("/removecourse/:id", pathRemoveCourseInStudent);
+studentRouter.patch("/newcourse/:id", newCourseInStudent);
+studentRouter.patch("/removecourse/:id", removeCourseInStudent);
+studentRouter.patch("/image/:id", upload.single('image'), updateImageStudent);
 studentRouter.delete("/:id", deleteStudent);
 
 module.exports = studentRouter;

@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
     timestamps: true
 });
 
-// Ejecutar antes del save
+// Ejecutar antes del save 
 // Genera hash del password para guardarlo cifrado
 userSchema.pre('save', function (next) {
 
@@ -30,6 +30,21 @@ userSchema.pre('save', function (next) {
     this.password = bcrypt.hashSync(this.password, 10);
     next();
 });
+
+userSchema.pre('findOneAndUpdate', function (next) {
+
+    if (this._update.password) { 
+        if (!validationPassword(this._update.password)) {
+            const error = new Error();
+            error.message = "Invalid password";
+            error.status = 400
+        }
+        this._update.password = bcrypt.hashSync(this._update.password, 10);
+    }
+
+    next();
+});
+
 
 // Name of collection in MongoDB and schema
 const User = mongoose.model('Users', userSchema);
