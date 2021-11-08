@@ -16,11 +16,11 @@ const {
 studentRouter.get("/", getAllStudents);
 studentRouter.get("/course/:courseid", getStudentsByCourse);
 studentRouter.get("/:id", getStudentById);
-studentRouter.put("/:id", updateStudentById);
+studentRouter.put("/:id", upload.single('image'), updateStudentById);
 studentRouter.post("/", upload.single('image'), postNewStudent);
+studentRouter.patch("/image/:id", upload.single('image'), updateImageStudent);
 studentRouter.patch("/newcourse/:id", newCourseInStudent);
 studentRouter.patch("/removecourse/:id", removeCourseInStudent);
-studentRouter.patch("/image/:id", upload.single('image'), updateImageStudent);
 studentRouter.delete("/:id", deleteStudent);
 
 module.exports = studentRouter;

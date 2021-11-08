@@ -25,6 +25,7 @@ const app = express();
 
 connectWithDB();
 
+app.use(express.limit('5mb'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logging);
