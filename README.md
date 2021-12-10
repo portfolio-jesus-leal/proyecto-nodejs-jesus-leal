@@ -2,12 +2,18 @@
 # Proyecto API REST con Node.js
 
 La API se encuentra desplegada en Heroku:
+
 http://my-first-api-upgrade-bootcamp.herokuapp.com/
 
-Repositorio en GitLab:
-[https://gitlab.com/jleal22/proyecto-nodejs-jesus-leal](https://gitlab.com/jleal22/proyecto-nodejs-jesus-leal)
+Repositorio en GitHub:
+
+[https://github.com/portfolio-jesus-leal/proyecto-nodejs-jesus-leal](https://github.com/portfolio-jesus-leal/proyecto-nodejs-jesus-leal)
 
 La API utiliza una base de datos MongoDB que se encuentra en [MongoDB Atlas](https://www.mongodb.com/atlas).
+
+Puede consultar la colección **project-basic-node** con MongoDb Compass:
+
+_mongodb+srv://finder:finder@intro-to-node.whxhz.mongodb.net/project-basic-node_
 
 **Colecciones:**
 - Courses
